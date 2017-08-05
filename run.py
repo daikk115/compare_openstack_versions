@@ -49,6 +49,8 @@ def make_enviroment(project_name, branch):
     # tmp = tempfile.mkdtemp()
     if branch == 'stable/ocata':
         tmp = '/home/stack/daidv_workspace/tmp/ocata'
+    elif branch == 'stable/newton':
+        tmp = '/home/stack/daidv_workspace/tmp/newton'
     else:
         tmp = '/home/stack/daidv_workspace/tmp/mitaka/'
     # Jump into random directory
@@ -74,13 +76,56 @@ def make_enviroment(project_name, branch):
     return new_conf
 
 
+def make_conf_to_dict(input_conf):
+    conf_dict = {}
+    for name, section in input_conf._groups.items():
+        conf_dict[name] = section._opts.keys()
+    return conf_dict
+
+
+def make_deprecate_option_to_dict(input_depre):
+    depre_dict = {}
+    for name, section in input_depre._deprecated_opts.items():
+        depre_dict[name] = section.keys()
+    return depre_dict
+
+
+def compare_two_dicts(input_dict1, input_dict2):
+    """
+    :param input_dict1:
+    :param input_dict2:
+    :return:
+    """
+    dict1_diff_dict2 = {}
+    for key, options12 in input_dict1.items():
+        if key not in input_dict2:
+            dict1_diff_dict2[key] = options12
+        else:
+            list1_diff = [option for option in options12 if option
+                          not in input_dict2[key]]
+            if list1_diff:
+                dict1_diff_dict2[key] = list1_diff
+    return dict1_diff_dict2
+
+
 if __name__ == '__main__':
     project_name = 'keystone'
     mitaka_branch = 'mitaka-eol'
-    ocata_branch = 'stable/ocata'
+    ocata_branch = 'stable/newton'
 
     mitaka = make_enviroment(project_name, mitaka_branch)
     ocata = make_enviroment(project_name, ocata_branch)
+    # Make dict from CONF object
+    mitaka_dict = make_conf_to_dict(mitaka)
+    ocata_dict = make_conf_to_dict(ocata)
+    # Show difference options between mitaka and ocata
+    mitaka_with_ocata = compare_two_dicts(mitaka_dict, ocata_dict)
+    ocata_with_mitaka = compare_two_dicts(ocata_dict, mitaka_dict)
 
-    print(mitaka)
-    print(ocata)
+    deprecate_option_ocata = make_deprecate_option_to_dict(ocata)
+    a = compare_two_dicts(mitaka_with_ocata, deprecate_option_ocata)
+
+    print mitaka_with_ocata
+    print "=============="
+    print ocata_with_mitaka
+
