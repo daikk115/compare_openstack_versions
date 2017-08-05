@@ -4,71 +4,83 @@
 import os
 import tempfile
 import shutil
+import importlib
+import sys
 
 from oslo_config import cfg
-from oslo_config import generator as gn
 
-__all__ = ['get_conf']
+__all__ = ['make_enviroment']
 
 
-def get_conf(namespaces_file):
-    conf = cfg.ConfigOpts()
-    gn.register_cli_opts(conf)
-    oslo_args = ['--config-file', namespaces_file]
-    conf(oslo_args)
-    groups = gn._get_groups(gn._list_opts(conf.namespace))
-
-    new_conf = cfg.ConfigOpts()
-    all_namespaces = []
-    for k, v in groups.items():
-        group = cfg.OptGroup(k)
+def import_opts(project_name):
+    # Make setup.cfg url
+    dir_path = os.getcwd()
+    sys.path.insert(0, dir_path)
+    setup_cfg = "{}/setup.cfg".format(dir_path)
+    # Get list module should be called with
+    setup_conf = cfg.ConfigOpts()
+    setup_args = ['--config-file', setup_cfg]
+    setup_conf(setup_args)
+    section_options = setup_conf._namespace._parsed[0]
+    _list = section_options['entry_points']['oslo.config.opts'][0].split('\n')
+    _list_opts = []
+    for option in _list:
         try:
-            namespaces = v.get('namespaces', [])
-        except:
-            namespaces = v
-        list_opts = []
-        for namespace in namespaces:
-            all_namespaces.append(namespace[0])
-            list_opts.extend(namespace[1])
-        new_conf.register_group(group)
-        if k == 'DEFAULT':
-            new_conf.register_opts(list_opts)
-        new_conf.register_opts(list_opts, group=group)
+            option = option.replace(':', '=')
+            opts_module = option.split('=')[1].strip()
+            _module = importlib.import_module(opts_module)
+        except Exception as e:
+            pass
+        else:
+            _list_opts.extend(_module.list_opts())
+            # No need these any more
+            # del _module
+            # sys.modules.pop(opts_module)
+    del sys.path[0]
+    sys.modules.pop(project_name)  # We only need to pop top level module
+    return _list_opts
 
-    return new_conf
 
-
-def make_enviroment(project_name, branch, namespaces_file):
+def make_enviroment(project_name, branch):
     # Backup working directory
     working_directory = os.getcwd()
 
     # Make random directory
     # tmp = tempfile.mkdtemp()
-    tmp = '/tmp'
+    if branch == 'stable/ocata':
+        tmp = '/home/stack/daidv_workspace/tmp/ocata'
+    else:
+        tmp = '/home/stack/daidv_workspace/tmp/mitaka/'
     # Jump into random directory
     os.chdir(tmp)
     # Clone code from git/home/stack/daidv_workspace/get_difference
-    url = "git clone https://github.com/openstack/{} -b {}".format(project_name, branch)
+    url = "git clone https://github.com/openstack/{} -b {}".format(
+                                                        project_name, branch)
     os.system(url)
-    os.chdir(project_name)
+    os.chdir(project_name) # not really need for now
 
     # Do something here
-    conf = get_conf(namespaces_file)
+    new_conf = cfg.ConfigOpts()
+    list_opts = import_opts(project_name)
+    for opt in list_opts:
+        new_conf.register_opts(opt[1], group=opt[0])
+        if not opt[0]:
+            new_conf.register_opts(opt[1], group='DEFAULT')
 
     # Clean up temporary directory
     os.chdir(working_directory)
     # shutil.rmtree(tmp)
 
-    return conf
+    return new_conf
 
 
 if __name__ == '__main__':
-    project_name = 'neutron'
+    project_name = 'keystone'
     mitaka_branch = 'mitaka-eol'
     ocata_branch = 'stable/ocata'
-    namespaces_file = '/home/stack/daidv_workspace/get_difference/project_namespaces/keystone/keystone.conf'
 
-    mitaka = make_enviroment(project_name, mitaka_branch, namespaces_file)
-    ocata = make_enviroment(project_name, ocata_branch, namespaces_file)
+    mitaka = make_enviroment(project_name, mitaka_branch)
+    ocata = make_enviroment(project_name, ocata_branch)
 
+    print(mitaka)
     print(ocata)
