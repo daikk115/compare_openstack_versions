@@ -24,13 +24,14 @@ def import_opts(project_name):
     _list_opts = []
     for option in _list:
         try:
-            option = option.replace(':', '=')
-            opts_module = option.split('=')[1].strip()
+            module_function = option.split(':')
+            opts_module = ".".join(tree.strip() for
+                                   tree in module_function[0].split('=')[1:])
             _module = importlib.import_module(opts_module)
         except Exception as e:
-            pass
+            continue
         else:
-            _list_opts.extend(_module.list_opts())
+            _list_opts.extend(getattr(_module, module_function[1])())
             # No need these any more
             # del _module
             # sys.modules.pop(opts_module)
