@@ -117,9 +117,9 @@ def compare_two_dicts(input_dict1, input_dict2):
     return dict_diff
 
 
-def gen_yaml_from_dict(deprecated_options, new_options, output=None, project=None):
-    if output is None:
-        output = get_root_path('template_yaml', project)
+def gen_yaml_from_dict(deprecated_options, new_options, project):
+    name_file_project = project.replace('.', '_') + '.yaml'
+    output = get_root_path('template_yaml', name_file_project)
     with open(output, mode='w+') as f:
         f.write('deprecated_options:\n')
         for section, options in deprecated_options.items():
@@ -180,7 +180,7 @@ def make_deprecate_option_to_dict(CONF):
 
 
 if __name__ == '__main__':
-    project_name = 'oslo.messaging'
+    project_name = 'neutron'
     base_branch = 'mitaka'
     target_branch = 'newton'
 
@@ -199,7 +199,4 @@ if __name__ == '__main__':
 
     # Generate a yaml file.
     gen_yaml_from_dict(list_fully_deprecated, new_options=new_options,
-                       project='keystone.yaml')
-
-
-
+                       project=project_name)
