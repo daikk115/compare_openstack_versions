@@ -2,8 +2,6 @@
 # Author: Dai Dang Van
 
 import os
-import tempfile
-import shutil
 import importlib
 import sys
 
@@ -47,23 +45,33 @@ def make_enviroment(project_name, branch):
 
     # Make random directory
     # tmp = tempfile.mkdtemp()
-    if branch == 'stable/ocata':
-        tmp = '/home/stack/daidv_workspace/tmp/ocata'
-    elif branch == 'stable/newton':
-        tmp = '/home/stack/daidv_workspace/tmp/newton'
-    else:
-        tmp = '/home/stack/daidv_workspace/tmp/mitaka/'
+    good_branch = 'stable/' + branch
+    alternative = branch + '-eol'
+    if branch == 'ocata':
+        tmp = '/home/stack/projects/ocata'
+    elif branch == 'newton':
+        tmp = '/home/stack/projects/newton'
+    elif branch == 'mitaka':
+        tmp = '/home/stack/projects/mitaka/'
     # Jump into random directory
     os.chdir(tmp)
-    # Clone code from git/home/stack/daidv_workspace/get_difference
-    url = "git clone https://github.com/openstack/{} -b {}".format(
-                                                        project_name, branch)
-    os.system(url)
-    os.chdir(project_name) # not really need for now
+    try:
+        # Clone code from git/home/stack/daidv_workspace/get_difference
+        url = "git clone https://github.com/openstack/{} -b {}".format(
+                                                            project_name, good_branch)
+        os.system(url)
+        os.chdir(project_name) # not really need for now
+    except OSError:
+        # When this exception occurs, it means that we can not clone the
+        # project with good_branch. It needs to reclone with new branch.
+        url = "git clone https://github.com/openstack/{} -b {}".format(
+            project_name, alternative)
+        os.system(url)
+        os.chdir(project_name)  # not really need for now
 
     # Do something here
     new_conf = cfg.ConfigOpts()
-    list_opts = import_opts(project_name)
+    list_opts = import_opts(project_name.replace(".", "_"))
     for opt in list_opts:
         new_conf.register_opts(opt[1], group=opt[0])
         if not opt[0]:
@@ -76,18 +84,19 @@ def make_enviroment(project_name, branch):
     return new_conf
 
 
+def get_root_path(*directory):
+    root_path = os.path.dirname(os.path.abspath(__file__))
+    if directory is None:
+        return root_path
+    else:
+        return os.path.join(root_path, *directory)
+
+
 def make_conf_to_dict(input_conf):
     conf_dict = {}
     for name, section in input_conf._groups.items():
         conf_dict[name] = section._opts.keys()
     return conf_dict
-
-
-def make_deprecate_option_to_dict(input_depre):
-    depre_dict = {}
-    for name, section in input_depre._deprecated_opts.items():
-        depre_dict[name] = section.keys()
-    return depre_dict
 
 
 def compare_two_dicts(input_dict1, input_dict2):
@@ -96,36 +105,101 @@ def compare_two_dicts(input_dict1, input_dict2):
     :param input_dict2:
     :return:
     """
-    dict1_diff_dict2 = {}
+    dict_diff = {}
     for key, options12 in input_dict1.items():
         if key not in input_dict2:
-            dict1_diff_dict2[key] = options12
+            dict_diff[key] = options12
         else:
             list1_diff = [option for option in options12 if option
                           not in input_dict2[key]]
             if list1_diff:
-                dict1_diff_dict2[key] = list1_diff
-    return dict1_diff_dict2
+                dict_diff[key] = list1_diff
+    return dict_diff
+
+
+def gen_yaml_from_dict(deprecated_options, new_options, output=None, project=None):
+    if output is None:
+        output = get_root_path('template_yaml', project)
+    with open(output, mode='w+') as f:
+        f.write('deprecated_options:\n')
+        for section, options in deprecated_options.items():
+            f.write('  %s:\n' % section)
+            for option in options:
+                f.write('  - name: %s\n' % option['name'])
+                f.write('    replacement_group: %s\n' % option['new_section'])
+                f.write('    replacement_name: %s\n' % option['new_name'])
+        f.write('new_options:\n')
+        for new_section, new_opts in new_options.items():
+            f.write('  %s:\n' % new_section)
+            for new_opt in new_opts:
+                f.write('  - name: %s\n' % new_opt)
+                f.write('    value: None\n')
+                f.write('    template: None\n')
+                f.write('    mapping: None\n')
+
+
+def make_deprecate_option_to_dict(CONF):
+    """
+    :param CONF: This is list_opt.
+    :return:
+    output1: List all deprecated options with full information.
+    output2: List all deprecated options.
+    output3: List all new options.
+    """
+    output1 = {}
+    output2 = {}
+    output3 = {}
+
+    for section, options in CONF._groups.items():
+        for new_name, k in options._opts.items():
+            list_deprecated = k['opt'].deprecated_opts
+            if len(list_deprecated) == 0:
+                continue
+            else:
+                group_deprecated = list_deprecated[0].group
+                name_deprecated = list_deprecated[0].name
+                if group_deprecated not in output1:
+                    output1[group_deprecated] = [{
+                        'name': name_deprecated,
+                        'new_name': new_name,
+                        'new_section': section
+                    }]
+                    output2[group_deprecated] = [name_deprecated]
+                else:
+                    output1[group_deprecated].append({
+                        'name': name_deprecated,
+                        'new_name': new_name,
+                        'new_section': section
+                    })
+                    output2[group_deprecated].append(name_deprecated)
+                if section not in output3:
+                    output3[section] = [new_name]
+                else:
+                    output3[section].append(new_name)
+    return output1, output2, output3
 
 
 if __name__ == '__main__':
-    project_name = 'keystone'
-    mitaka_branch = 'mitaka-eol'
-    ocata_branch = 'stable/newton'
+    project_name = 'oslo.messaging'
+    base_branch = 'mitaka'
+    target_branch = 'newton'
 
-    mitaka = make_enviroment(project_name, mitaka_branch)
-    ocata = make_enviroment(project_name, ocata_branch)
-    # Make dict from CONF object
-    mitaka_dict = make_conf_to_dict(mitaka)
-    ocata_dict = make_conf_to_dict(ocata)
-    # Show difference options between mitaka and ocata
-    mitaka_with_ocata = compare_two_dicts(mitaka_dict, ocata_dict)
-    ocata_with_mitaka = compare_two_dicts(ocata_dict, mitaka_dict)
+    base_conf_object = make_enviroment(project_name, base_branch)
+    target_conf_object = make_enviroment(project_name, target_branch)
+    # Create a conf with type is dict from conf object
+    base_conf_dict = make_conf_to_dict(base_conf_object)
+    target_conf_dict = make_conf_to_dict(target_conf_object)
 
-    deprecate_option_ocata = make_deprecate_option_to_dict(ocata)
-    a = compare_two_dicts(mitaka_with_ocata, deprecate_option_ocata)
+    # Show difference options between base release and target release
+    base_with_taerget = compare_two_dicts(base_conf_dict, target_conf_dict)
+    target_with_base = compare_two_dicts(target_conf_dict, base_conf_dict)
 
-    print mitaka_with_ocata
-    print "=============="
-    print ocata_with_mitaka
+    list_fully_deprecated, list_deprecated, new_options = \
+        make_deprecate_option_to_dict(target_conf_object)
+
+    # Generate a yaml file.
+    gen_yaml_from_dict(list_fully_deprecated, new_options=new_options,
+                       project='keystone.yaml')
+
+
 
