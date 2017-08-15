@@ -162,6 +162,8 @@ def make_deprecate_option_to_dict(CONF):
             else:
                 group_deprecated = list_deprecated[0].group
                 name_deprecated = list_deprecated[0].name
+                if str(name_deprecated) == 'None':
+                    name_deprecated = new_name
                 if group_deprecated not in output1:
                     output1[group_deprecated] = [{
                         'name': name_deprecated,
