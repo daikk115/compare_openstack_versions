@@ -74,9 +74,12 @@ def make_enviroment(project_name, branch):
     new_conf = cfg.ConfigOpts()
     list_opts = import_opts(project_name.replace(".", "_"))
     for opt in list_opts:
-        new_conf.register_opts(opt[1], group=opt[0])
-        if not opt[0]:
-            new_conf.register_opts(opt[1], group='DEFAULT')
+        try:
+            new_conf.register_opts(opt[1], group=opt[0])
+            if not opt[0]:
+                new_conf.register_opts(opt[1], group='DEFAULT')
+        except cfg.DuplicateOptError as e:
+            continue
 
     # Clean up temporary directory
     os.chdir(working_directory)
@@ -181,7 +184,7 @@ def make_deprecate_option_to_dict(CONF):
 
 
 if __name__ == '__main__':
-    project_name = 'neutron'
+    project_name = 'cinder'
     base_branch = 'mitaka'
     target_branch = 'newton'
 
