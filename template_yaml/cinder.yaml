@@ -1,5 +1,5 @@
 deprecated_options:
-  None:
+  DEFAULT:
   - name: hplefthand_debug
     replacement_group: DEFAULT
     replacement_name: hpelefthand_debug
@@ -129,6 +129,7 @@ deprecated_options:
   - name: hp3par_iscsi_chap_enabled
     replacement_group: DEFAULT
     replacement_name: hpe3par_iscsi_chap_enabled
+  BACKEND:
   - name: host
     replacement_group: BACKEND
     replacement_name: backend_host
