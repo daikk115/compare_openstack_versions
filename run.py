@@ -48,14 +48,13 @@ def make_enviroment(project_name, branch):
     # tmp = tempfile.mkdtemp()
     good_branch = 'stable/' + branch
     alternative = branch + '-eol'
-    if branch == 'ocata':
-        tmp = '/home/stack/projects/ocata'
-    elif branch == 'newton':
-        tmp = '/home/stack/projects/newton'
-    elif branch == 'mitaka':
-        tmp = '/home/stack/projects/mitaka/'
+    tmp = '/home/stack/projects/' + branch
     # Jump into random directory
-    os.chdir(tmp)
+    try:
+        os.chdir(tmp)
+    except OSError:
+        os.mkdir(tmp)
+        os.chdir(tmp)
     try:
         # Clone code from git/home/stack/daidv_workspace/get_difference
         url = "git clone https://github.com/openstack/{} -b {}".format(
@@ -123,7 +122,7 @@ def compare_two_dicts(input_dict1, input_dict2):
 
 def gen_yaml_from_dict(deprecated_options, new_options, project):
     name_file_project = project.replace('.', '_') + '.yaml'
-    output = get_root_path('template_yaml', name_file_project)
+    output = get_root_path('template_yaml', 'n_to_o', name_file_project)
     with open(output, mode='w+') as f:
         f.write('deprecated_options:\n')
         for section, options in deprecated_options.items():
@@ -188,9 +187,9 @@ def make_deprecate_option_to_dict(CONF):
 
 
 if __name__ == '__main__':
-    project_name = 'glance'
-    base_branch = 'mitaka'
-    target_branch = 'newton'
+    project_name = 'neutron'
+    base_branch = 'newton'
+    target_branch = 'ocata'
 
     base_conf_object = make_enviroment(project_name, base_branch)
     target_conf_object = make_enviroment(project_name, target_branch)
