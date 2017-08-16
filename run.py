@@ -56,6 +56,8 @@ def make_deprecate_option_to_dict(CONF):
                 continue
             else:
                 group_deprecated = list_deprecated[0].group
+                if str(group_deprecated) == 'None':
+                    group_deprecated = section
                 name_deprecated = list_deprecated[0].name
                 if str(name_deprecated) == 'None':
                     name_deprecated = new_name
