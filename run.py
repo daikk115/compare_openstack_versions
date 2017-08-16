@@ -4,7 +4,7 @@
 import os
 import importlib
 import sys
-
+from oslo_config import generator as gn
 from oslo_config import cfg
 
 __all__ = ['make_enviroment']
@@ -185,20 +185,49 @@ def make_deprecate_option_to_dict(CONF):
     return output1, output2, output3
 
 
+def get_conf(conf_file, project):
+    conf = cfg.ConfigOpts()
+    gn.register_cli_opts(conf)
+    oslo_args = ['--config-file', conf_file]
+    conf(oslo_args)
+    groups = gn._get_groups(gn._list_opts(conf.namespace))
+
+    # Make new CONF
+    new_conf = cfg.ConfigOpts()
+    for k, v in groups.items():
+        group = cfg.OptGroup(k)
+        try:
+            namespaces = v.get('namespaces', [])
+        except:
+            namespaces = v
+        list_opts = []
+        for namespace in namespaces:
+            if project in namespace[0].strip():
+                list_opts.extend(namespace[1])
+
+        if list_opts:
+            new_conf.register_group(group)
+            if k == 'DEFAULT':
+                new_conf.register_opts(list_opts)
+            new_conf.register_opts(list_opts, group=group)
+    return new_conf
+
+
 if __name__ == '__main__':
     project_name = 'cinder'
-    base_branch = 'mitaka'
-    target_branch = 'newton'
+    # base_branch = 'mitaka'
+    # target_branch = 'newton'
+    target_conf_object = get_conf('/opt/stack/cinder/cinder/config/cinder-config-generator.conf', 'cinder')
 
-    base_conf_object = make_enviroment(project_name, base_branch)
-    target_conf_object = make_enviroment(project_name, target_branch)
-    # Create a conf with type is dict from conf object
-    base_conf_dict = make_conf_to_dict(base_conf_object)
-    target_conf_dict = make_conf_to_dict(target_conf_object)
+    # base_conf_object = make_enviroment(project_name, base_branch)
+    # target_conf_object = make_enviroment(project_name, target_branch)
+    # # Create a conf with type is dict from conf object
+    # base_conf_dict = make_conf_to_dict(base_conf_object)
+    # target_conf_dict = make_conf_to_dict(target_conf_object)
 
     # Show difference options between base release and target release
-    base_with_taerget = compare_two_dicts(base_conf_dict, target_conf_dict)
-    target_with_base = compare_two_dicts(target_conf_dict, base_conf_dict)
+    # base_with_taerget = compare_two_dicts(base_conf_dict, target_conf_dict)
+    # target_with_base = compare_two_dicts(target_conf_dict, base_conf_dict)
 
     list_fully_deprecated, list_deprecated, new_options = \
         make_deprecate_option_to_dict(target_conf_object)
