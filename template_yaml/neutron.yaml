@@ -1,9 +1,16 @@
 deprecated_options:
+  DEFAULT:
+  - name: dnsmasq_dns_server
+    replacement_group: DEFAULT
+    replacement_name: dnsmasq_dns_servers
+  - name: dhcp_lease_time
+    replacement_group: DEFAULT
+    replacement_name: dhcp_lease_duration
   ml2:
   - name: segment_mtu
     replacement_group: DEFAULT
     replacement_name: global_physnet_mtu
-  None:
+  nova:
   - name: auth_plugin
     replacement_group: nova
     replacement_name: auth_type
@@ -16,12 +23,6 @@ deprecated_options:
   - name: tenant-name
     replacement_group: nova
     replacement_name: project_name
-  - name: dnsmasq_dns_server
-    replacement_group: DEFAULT
-    replacement_name: dnsmasq_dns_servers
-  - name: dhcp_lease_time
-    replacement_group: DEFAULT
-    replacement_name: dhcp_lease_duration
 new_options:
   DEFAULT:
   - name: dnsmasq_dns_servers
