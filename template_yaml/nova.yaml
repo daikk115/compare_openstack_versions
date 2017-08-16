@@ -1,0 +1,74 @@
+deprecated_options:
+  DEFAULT:
+  - name: xvpvncproxy_host
+    replacement_group: vnc
+    replacement_name: xvpvncproxy_host
+  - name: novncproxy_port
+    replacement_group: vnc
+    replacement_name: novncproxy_port
+  - name: xvpvncproxy_port
+    replacement_group: vnc
+    replacement_name: xvpvncproxy_port
+  - name: vnc_enabled
+    replacement_group: vnc
+    replacement_name: enabled
+  - name: vncserver_listen
+    replacement_group: vnc
+    replacement_name: vncserver_listen
+  - name: vncserver_proxyclient_address
+    replacement_group: vnc
+    replacement_name: vncserver_proxyclient_address
+  - name: vnc_keymap
+    replacement_group: vnc
+    replacement_name: keymap
+  - name: novncproxy_host
+    replacement_group: vnc
+    replacement_name: novncproxy_host
+  - name: xvpvncproxy_base_url
+    replacement_group: vnc
+    replacement_name: xvpvncproxy_base_url
+  - name: novncproxy_base_url
+    replacement_group: vnc
+    replacement_name: novncproxy_base_url
+new_options:
+  vnc:
+  - name: xvpvncproxy_host
+    value: None
+    template: None
+    mapping: None
+  - name: novncproxy_port
+    value: None
+    template: None
+    mapping: None
+  - name: xvpvncproxy_port
+    value: None
+    template: None
+    mapping: None
+  - name: enabled
+    value: None
+    template: None
+    mapping: None
+  - name: vncserver_listen
+    value: None
+    template: None
+    mapping: None
+  - name: vncserver_proxyclient_address
+    value: None
+    template: None
+    mapping: None
+  - name: keymap
+    value: None
+    template: None
+    mapping: None
+  - name: novncproxy_host
+    value: None
+    template: None
+    mapping: None
+  - name: xvpvncproxy_base_url
+    value: None
+    template: None
+    mapping: None
+  - name: novncproxy_base_url
+    value: None
+    template: None
+    mapping: None

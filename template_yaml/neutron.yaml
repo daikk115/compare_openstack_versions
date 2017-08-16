@@ -1,0 +1,55 @@
+deprecated_options:
+  ml2:
+  - name: segment_mtu
+    replacement_group: DEFAULT
+    replacement_name: global_physnet_mtu
+  None:
+  - name: auth_plugin
+    replacement_group: nova
+    replacement_name: auth_type
+  - name: tenant-id
+    replacement_group: nova
+    replacement_name: project_id
+  - name: user-name
+    replacement_group: nova
+    replacement_name: username
+  - name: tenant-name
+    replacement_group: nova
+    replacement_name: project_name
+  - name: dnsmasq_dns_server
+    replacement_group: DEFAULT
+    replacement_name: dnsmasq_dns_servers
+  - name: dhcp_lease_time
+    replacement_group: DEFAULT
+    replacement_name: dhcp_lease_duration
+new_options:
+  DEFAULT:
+  - name: dnsmasq_dns_servers
+    value: None
+    template: None
+    mapping: None
+  - name: global_physnet_mtu
+    value: None
+    template: None
+    mapping: None
+  - name: dhcp_lease_duration
+    value: None
+    template: None
+    mapping: None
+  nova:
+  - name: auth_type
+    value: None
+    template: None
+    mapping: None
+  - name: project_id
+    value: None
+    template: None
+    mapping: None
+  - name: username
+    value: None
+    template: None
+    mapping: None
+  - name: project_name
+    value: None
+    template: None
+    mapping: None

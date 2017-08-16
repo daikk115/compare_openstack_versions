@@ -1,0 +1,64 @@
+deprecated_options:
+  DEFAULT:
+  - name: public_port
+    replacement_group: eventlet_server
+    replacement_name: public_port
+  - name: admin_port
+    replacement_group: eventlet_server
+    replacement_name: admin_port
+  - name: bind_host
+    replacement_group: eventlet_server
+    replacement_name: public_bind_host
+  - name: bind_host
+    replacement_group: eventlet_server
+    replacement_name: admin_bind_host
+  assignment:
+  - name: list_limit
+    replacement_group: resource
+    replacement_name: list_limit
+  - name: cache_time
+    replacement_group: resource
+    replacement_name: cache_time
+  - name: caching
+    replacement_group: resource
+    replacement_name: caching
+  token:
+  - name: revocation_cache_time
+    replacement_group: revoke
+    replacement_name: cache_time
+new_options:
+  resource:
+  - name: list_limit
+    value: None
+    template: None
+    mapping: None
+  - name: cache_time
+    value: None
+    template: None
+    mapping: None
+  - name: caching
+    value: None
+    template: None
+    mapping: None
+  eventlet_server:
+  - name: public_port
+    value: None
+    template: None
+    mapping: None
+  - name: admin_port
+    value: None
+    template: None
+    mapping: None
+  - name: public_bind_host
+    value: None
+    template: None
+    mapping: None
+  - name: admin_bind_host
+    value: None
+    template: None
+    mapping: None
+  revoke:
+  - name: cache_time
+    value: None
+    template: None
+    mapping: None

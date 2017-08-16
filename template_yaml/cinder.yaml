@@ -1,0 +1,322 @@
+deprecated_options:
+  None:
+  - name: hplefthand_debug
+    replacement_group: DEFAULT
+    replacement_name: hpelefthand_debug
+  - name: hpxp_copy_check_interval
+    replacement_group: DEFAULT
+    replacement_name: hpexp_copy_check_interval
+  - name: hpxp_storage_cli
+    replacement_group: DEFAULT
+    replacement_name: hpexp_storage_cli
+  - name: nas_ip
+    replacement_group: DEFAULT
+    replacement_name: nas_host
+  - name: hpxp_horcm_add_conf
+    replacement_group: DEFAULT
+    replacement_name: hpexp_horcm_add_conf
+  - name: hpxp_zoning_request
+    replacement_group: DEFAULT
+    replacement_name: hpexp_zoning_request
+  - name: osapi_compute_link_prefix
+    replacement_group: DEFAULT
+    replacement_name: osapi_volume_base_URL
+  - name: hpxp_thin_pool
+    replacement_group: DEFAULT
+    replacement_name: hpexp_thin_pool
+  - name: hp3par_password
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_password
+  - name: pybasedir
+    replacement_group: DEFAULT
+    replacement_name: state_path
+  - name: hpxp_ldev_range
+    replacement_group: DEFAULT
+    replacement_name: hpexp_ldev_range
+  - name: hp3par_cpg_snap
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_cpg_snap
+  - name: netapp_volume_list
+    replacement_group: DEFAULT
+    replacement_name: netapp_pool_name_search_pattern
+  - name: hp3par_snapshot_expiration
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_snapshot_expiration
+  - name: eqlx_chap_password
+    replacement_group: DEFAULT
+    replacement_name: chap_password
+  - name: hplefthand_api_url
+    replacement_group: DEFAULT
+    replacement_name: hpelefthand_api_url
+  - name: hplefthand_iscsi_chap_enabled
+    replacement_group: DEFAULT
+    replacement_name: hpelefthand_iscsi_chap_enabled
+  - name: hpxp_compute_target_ports
+    replacement_group: DEFAULT
+    replacement_name: hpexp_compute_target_ports
+  - name: hp3par_iscsi_ips
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_iscsi_ips
+  - name: hpxp_storage_id
+    replacement_group: DEFAULT
+    replacement_name: hpexp_storage_id
+  - name: hp3par_debug
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_debug
+  - name: hplefthand_username
+    replacement_group: DEFAULT
+    replacement_name: hpelefthand_username
+  - name: hp3par_username
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_username
+  - name: hpxp_pool
+    replacement_group: DEFAULT
+    replacement_name: hpexp_pool
+  - name: eqlx_chap_login
+    replacement_group: DEFAULT
+    replacement_name: chap_username
+  - name: hpxp_default_copy_method
+    replacement_group: DEFAULT
+    replacement_name: hpexp_default_copy_method
+  - name: glusterfs_sparsed_volumes
+    replacement_group: DEFAULT
+    replacement_name: nas_volume_prov_type
+  - name: hpxp_horcm_numbers
+    replacement_group: DEFAULT
+    replacement_name: hpexp_horcm_numbers
+  - name: hplefthand_password
+    replacement_group: DEFAULT
+    replacement_name: hpelefthand_password
+  - name: hpxp_horcm_resource_name
+    replacement_group: DEFAULT
+    replacement_name: hpexp_horcm_resource_name
+  - name: eqlx_use_chap
+    replacement_group: DEFAULT
+    replacement_name: use_chap_auth
+  - name: hpxp_horcm_user
+    replacement_group: DEFAULT
+    replacement_name: hpexp_horcm_user
+  - name: hpxp_group_request
+    replacement_group: DEFAULT
+    replacement_name: hpexp_group_request
+  - name: hpxp_async_copy_check_interval
+    replacement_group: DEFAULT
+    replacement_name: hpexp_async_copy_check_interval
+  - name: hp3par_cpg
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_cpg
+  - name: hpxp_copy_speed
+    replacement_group: DEFAULT
+    replacement_name: hpexp_copy_speed
+  - name: hpxp_horcm_name_only_discovery
+    replacement_group: DEFAULT
+    replacement_name: hpexp_horcm_name_only_discovery
+  - name: hp3par_snapshot_retention
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_snapshot_retention
+  - name: hpxp_target_ports
+    replacement_group: DEFAULT
+    replacement_name: hpexp_target_ports
+  - name: hplefthand_clustername
+    replacement_group: DEFAULT
+    replacement_name: hpelefthand_clustername
+  - name: netapp_eseries_host_type
+    replacement_group: DEFAULT
+    replacement_name: netapp_host_type
+  - name: hp3par_api_url
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_api_url
+  - name: hp3par_iscsi_chap_enabled
+    replacement_group: DEFAULT
+    replacement_name: hpe3par_iscsi_chap_enabled
+  - name: host
+    replacement_group: BACKEND
+    replacement_name: backend_host
+  keymgr:
+  - name: fixed_key
+    replacement_group: KEY_MANAGER
+    replacement_name: fixed_key
+new_options:
+  DEFAULT:
+  - name: hpelefthand_debug
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_copy_check_interval
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_storage_cli
+    value: None
+    template: None
+    mapping: None
+  - name: nas_host
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_horcm_add_conf
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_zoning_request
+    value: None
+    template: None
+    mapping: None
+  - name: osapi_volume_base_URL
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_thin_pool
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_password
+    value: None
+    template: None
+    mapping: None
+  - name: state_path
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_ldev_range
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_cpg_snap
+    value: None
+    template: None
+    mapping: None
+  - name: netapp_pool_name_search_pattern
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_snapshot_expiration
+    value: None
+    template: None
+    mapping: None
+  - name: chap_password
+    value: None
+    template: None
+    mapping: None
+  - name: hpelefthand_api_url
+    value: None
+    template: None
+    mapping: None
+  - name: hpelefthand_iscsi_chap_enabled
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_compute_target_ports
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_iscsi_ips
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_storage_id
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_debug
+    value: None
+    template: None
+    mapping: None
+  - name: hpelefthand_username
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_username
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_pool
+    value: None
+    template: None
+    mapping: None
+  - name: chap_username
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_default_copy_method
+    value: None
+    template: None
+    mapping: None
+  - name: nas_volume_prov_type
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_horcm_numbers
+    value: None
+    template: None
+    mapping: None
+  - name: hpelefthand_password
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_horcm_resource_name
+    value: None
+    template: None
+    mapping: None
+  - name: use_chap_auth
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_horcm_user
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_group_request
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_async_copy_check_interval
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_cpg
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_copy_speed
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_horcm_name_only_discovery
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_snapshot_retention
+    value: None
+    template: None
+    mapping: None
+  - name: hpexp_target_ports
+    value: None
+    template: None
+    mapping: None
+  - name: hpelefthand_clustername
+    value: None
+    template: None
+    mapping: None
+  - name: netapp_host_type
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_api_url
+    value: None
+    template: None
+    mapping: None
+  - name: hpe3par_iscsi_chap_enabled
+    value: None
+    template: None
+    mapping: None
+  KEY_MANAGER:
+  - name: fixed_key
+    value: None
+    template: None
+    mapping: None
+  BACKEND:
+  - name: backend_host
+    value: None
+    template: None
+    mapping: None
