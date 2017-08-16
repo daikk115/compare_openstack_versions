@@ -2,90 +2,10 @@
 # Author: Dai Dang Van
 
 import os
-import importlib
-import sys
 from oslo_config import generator as gn
 from oslo_config import cfg
 
 __all__ = ['make_enviroment']
-
-
-def import_opts(project_name):
-    # Make setup.cfg url
-    dir_path = os.getcwd()
-    sys.path.insert(0, dir_path)
-    setup_cfg = "{}/setup.cfg".format(dir_path)
-    # Get list module should be called with
-    setup_conf = cfg.ConfigOpts()
-    setup_args = ['--config-file', setup_cfg]
-    setup_conf(setup_args)
-    section_options = setup_conf._namespace._parsed[0]
-    _list = section_options['entry_points']['oslo.config.opts'][0].split('\n')
-    _list_opts = []
-    for option in _list:
-        try:
-            module_function = option.split(':')
-            opts_module = ".".join(tree.strip() for
-                                   tree in module_function[0].split('=')[1:])
-            _module = importlib.import_module(opts_module)
-        except Exception as e:
-            continue
-        else:
-            _list_opts.extend(getattr(_module, module_function[1])())
-            # No need these any more
-            # del _module
-            # sys.modules.pop(opts_module)
-    del sys.path[0]
-    sys.modules.pop(project_name)  # We only need to pop top level module
-    return _list_opts
-
-
-def make_enviroment(project_name, branch):
-    # Backup working directory
-    working_directory = os.getcwd()
-
-    # Make random directory
-    # tmp = tempfile.mkdtemp()
-    good_branch = 'stable/' + branch
-    alternative = branch + '-eol'
-    if branch == 'ocata':
-        tmp = '/home/stack/projects/ocata'
-    elif branch == 'newton':
-        tmp = '/home/stack/projects/newton'
-    elif branch == 'mitaka':
-        tmp = '/home/stack/projects/mitaka/'
-    # Jump into random directory
-    os.chdir(tmp)
-    try:
-        # Clone code from git/home/stack/daidv_workspace/get_difference
-        url = "git clone https://github.com/openstack/{} -b {}".format(
-                                                            project_name, good_branch)
-        os.system(url)
-        os.chdir(project_name) # not really need for now
-    except OSError:
-        # When this exception occurs, it means that we can not clone the
-        # project with good_branch. It needs to reclone with new branch.
-        url = "git clone https://github.com/openstack/{} -b {}".format(
-            project_name, alternative)
-        os.system(url)
-        os.chdir(project_name)  # not really need for now
-
-    # Do something here
-    new_conf = cfg.ConfigOpts()
-    list_opts = import_opts(project_name.replace(".", "_"))
-    for opt in list_opts:
-        try:
-            new_conf.register_opts(opt[1], group=opt[0])
-            if not opt[0]:
-                new_conf.register_opts(opt[1], group='DEFAULT')
-        except cfg.DuplicateOptError as e:
-            continue
-
-    # Clean up temporary directory
-    os.chdir(working_directory)
-    # shutil.rmtree(tmp)
-
-    return new_conf
 
 
 def get_root_path(*directory):
@@ -94,31 +14,6 @@ def get_root_path(*directory):
         return root_path
     else:
         return os.path.join(root_path, *directory)
-
-
-def make_conf_to_dict(input_conf):
-    conf_dict = {}
-    for name, section in input_conf._groups.items():
-        conf_dict[name] = section._opts.keys()
-    return conf_dict
-
-
-def compare_two_dicts(input_dict1, input_dict2):
-    """
-    :param input_dict1:
-    :param input_dict2:
-    :return:
-    """
-    dict_diff = {}
-    for key, options12 in input_dict1.items():
-        if key not in input_dict2:
-            dict_diff[key] = options12
-        else:
-            list1_diff = [option for option in options12 if option
-                          not in input_dict2[key]]
-            if list1_diff:
-                dict_diff[key] = list1_diff
-    return dict_diff
 
 
 def gen_yaml_from_dict(deprecated_options, new_options, project):
@@ -215,23 +110,9 @@ def get_conf(conf_file, project):
 
 if __name__ == '__main__':
     project_name = 'cinder'
-    # base_branch = 'mitaka'
-    # target_branch = 'newton'
     target_conf_object = get_conf('/opt/stack/cinder/cinder/config/cinder-config-generator.conf', 'cinder')
-
-    # base_conf_object = make_enviroment(project_name, base_branch)
-    # target_conf_object = make_enviroment(project_name, target_branch)
-    # # Create a conf with type is dict from conf object
-    # base_conf_dict = make_conf_to_dict(base_conf_object)
-    # target_conf_dict = make_conf_to_dict(target_conf_object)
-
-    # Show difference options between base release and target release
-    # base_with_taerget = compare_two_dicts(base_conf_dict, target_conf_dict)
-    # target_with_base = compare_two_dicts(target_conf_dict, base_conf_dict)
-
     list_fully_deprecated, list_deprecated, new_options = \
         make_deprecate_option_to_dict(target_conf_object)
-
     # Generate a yaml file.
     gen_yaml_from_dict(list_fully_deprecated, new_options=new_options,
                        project=project_name)
