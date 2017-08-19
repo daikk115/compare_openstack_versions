@@ -1,0 +1,44 @@
+deprecated_options:
+  DEFAULT:
+  - name: task_time_to_live
+    replacement_group: task
+    replacement_name: task_time_to_live
+  - name: container_formats
+    replacement_group: image_format
+    replacement_name: container_formats
+  - name: disk_formats
+    replacement_group: image_format
+    replacement_name: disk_formats
+  task:
+  - name: eventlet_executor_pool_size
+    replacement_group: taskflow_executor
+    replacement_name: max_workers
+  profiler:
+  - name: profiler_enabled
+    replacement_group: profiler
+    replacement_name: enabled
+new_options:
+  image_format:
+  - name: container_formats
+    value: None
+    template: None
+    mapping: None
+  - name: disk_formats
+    value: None
+    template: None
+    mapping: None
+  task:
+  - name: task_time_to_live
+    value: None
+    template: None
+    mapping: None
+  taskflow_executor:
+  - name: max_workers
+    value: None
+    template: None
+    mapping: None
+  profiler:
+  - name: enabled
+    value: None
+    template: None
+    mapping: None

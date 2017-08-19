@@ -187,7 +187,7 @@ def make_deprecate_option_to_dict(CONF):
 
 
 if __name__ == '__main__':
-    project_name = 'neutron'
+    project_name = 'keystone'
     base_branch = 'newton'
     target_branch = 'ocata'
 
@@ -198,7 +198,7 @@ if __name__ == '__main__':
     target_conf_dict = make_conf_to_dict(target_conf_object)
 
     # Show difference options between base release and target release
-    base_with_taerget = compare_two_dicts(base_conf_dict, target_conf_dict)
+    base_with_target = compare_two_dicts(base_conf_dict, target_conf_dict)
     target_with_base = compare_two_dicts(target_conf_dict, base_conf_dict)
 
     list_fully_deprecated, list_deprecated, new_options = \
